@@ -1,0 +1,41 @@
+name: Build macOS App
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app (Intel x86_64)
+        env:
+          TAURI_BUNDLING_TARGET: x86_64-apple-darwin
+        run: npx tauri build --target x86_64-apple-darwin
+
+      - name: Zip macOS app
+        run: |
+          cd src-tauri/target/x86_64-apple-darwin/release/bundle/macos
+          zip -r /tmp/Sleems-Tasks-macOS.zip "Sleem's Tasks.app"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sleems-Tasks-macOS
+          path: /tmp/Sleems-Tasks-macOS.zip

@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Sleem's Tasks</title>
+<style>
+:root{
+  --bg:#F0F2F5; --card:rgba(255,255,255,0.92); --card-solid:#FFF; --card-border:rgba(0,0,0,0.06);
+  --text:#111827; --text-2:#4B5563; --text-3:#9CA3AF; --accent-contrast:#FFF; --primary:#111827;
+  --ring:rgba(17,24,39,0.12); --shadow-sm:0 1px 2px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg:0 8px 30px rgba(0,0,0,0.08),0 20px 60px rgba(0,0,0,0.06); --radius-lg:20px; --radius-pill:999px;
+  --segment-bg:#EDEEF1; --segment-active:#FFF; --dot-color:#D1D5DB;
+  --pin-red:#EF4444; --pin-blue:#3B82F6; --pin-green:#10B981; --pin-purple:#8B5CF6; --pin-yellow:#F59E0B;
+  --overlay-bg:rgba(0,0,0,0.2);
+  --toggle-bg:#D1D5DB; --toggle-active:#34C759;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0E0F12; --card:rgba(24,26,32,0.86); --card-solid:#181A20; --card-border:rgba(255,255,255,0.08);
+    --text:#E8EAED; --text-2:#9AA0AA; --text-3:#6B7280; --accent-contrast:#0E0F12; --primary:#F3F4F6;
+    --ring:rgba(255,255,255,0.12); --shadow-sm:0 1px 2px rgba(0,0,0,0.3),0 4px 16px rgba(0,0,0,0.3);
+    --shadow-lg:0 10px 40px rgba(0,0,0,0.5); --segment-bg:#1F2229; --segment-active:#2A2E38; --dot-color:#2A2E38;
+    --overlay-bg:rgba(0,0,0,0.5); --toggle-bg:#3A3D45; --toggle-active:#30D158;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-scrollbar-width:none;scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;padding:16px;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overflow-y:auto}
+:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+#app{width:100%;max-width:1240px;display:flex;flex-direction:column;gap:16px}
+
+.topbar{display:flex;flex-direction:column;gap:10px}
+.brand-row{display:flex;align-items:center;justify-content:space-between;padding:0 6px;flex-wrap:wrap;gap:8px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:32px;height:32px;border-radius:9px;background:var(--text);color:var(--accent-contrast);display:grid;place-items:center;font-weight:700;font-size:16px;transition:transform .2s}
+.brand-mark:hover{transform:rotate(-8deg) scale(1.05)}
+.brand-name{font-weight:700;letter-spacing:-0.03em;font-size:18px}
+.brand-sub{font-size:12px;color:var(--text-2);font-weight:500}
+.slogan{font-size:13px;color:var(--text-2);cursor:text;padding:2px 6px;border-radius:6px;transition:background .18s}
+.slogan:hover{background:var(--card-border)}
+.slogan-input{background:var(--card-solid);border:1px solid var(--card-border);border-radius:8px;padding:6px 10px;font-size:13px;min-width:240px;color:var(--text);font-family:inherit}
+
+.toolbox{
+  position:sticky;top:12px;z-index:40;background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--card-border);box-shadow:var(--shadow-sm);border-radius:20px;padding:10px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+}
+.tool-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1}
+.tool-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.segment{display:flex;background:var(--segment-bg);padding:3px;border-radius:999px;gap:2px}
+.seg-btn{border:none;background:transparent;padding:6px 14px;border-radius:999px;font-weight:600;font-size:13px;color:var(--text-2);cursor:pointer;transition:all .25s ease;font-family:inherit}
+.seg-btn.active{background:var(--segment-active);color:var(--text);box-shadow:var(--shadow-sm)}
+.tool-divider{width:1px;height:24px;background:var(--card-border);flex-shrink:0}
+.icon-tool{border:1px solid var(--card-border);background:var(--card-solid);padding:7px 12px;border-radius:10px;font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s ease;font-family:inherit}
+.icon-tool:hover{color:var(--text);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.icon-tool.active{background:#DBEAFE;color:#1D4ED8;border-color:#93C5FD}
+@media (prefers-color-scheme:dark){ .icon-tool.active{background:#1E3A8A;color:#BFDBFE;border-color:#3B82F6} }
+.btn-primary{background:var(--primary);color:var(--accent-contrast);border:none;padding:8px 16px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.12);transition:all .2s ease;display:flex;align-items:center;gap:6px;font-family:inherit}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,0.18)}
+.btn-primary:active{transform:translateY(0);box-shadow:0 1px 4px rgba(0,0,0,0.12)}
+
+/* iOS Toggle */
+.toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.toggle-label{font-size:12px;font-weight:600;color:var(--text-2);transition:color .2s}
+.toggle-wrap:hover .toggle-label{color:var(--text)}
+.toggle{width:42px;height:26px;border-radius:999px;background:var(--toggle-bg);position:relative;transition:background .3s ease;flex-shrink:0}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);transition:transform .3s cubic-bezier(.4,.0,.2,1)}
+.toggle.on{background:var(--toggle-active)}
+.toggle.on::after{transform:translateX(16px)}
+
+.view-container{display:none;animation:fadeSlide .35s ease}
+.view-container.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.list-group{margin-bottom:22px}
+.list-group-header{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-3);margin:0 0 8px 8px}
+.list-card{background:var(--card-solid);border:1px solid var(--card-border);border-radius:20px;box-shadow:var(--shadow-sm);overflow:hidden}
+.todo-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--card-border);transition:all .25s ease;position:relative}
+.todo-row:last-child{border-bottom:none}
+.todo-row.completed{opacity:0.55}
+.todo-row:hover{background:rgba(0,0,0,0.02)}
+@media (prefers-color-scheme:dark){ .todo-row:hover{background:rgba(255,255,255,0.03)} }
+
+.check{width:22px;height:22px;border-radius:50%;border:2px solid var(--dot-color);display:grid;place-items:center;flex-shrink:0;cursor:pointer;transition:all .25s cubic-bezier(.4,.0,.2,1);font-size:12px;color:transparent}
+.check.done{background:var(--text);border-color:var(--text);color:var(--accent-contrast);transform:scale(1.08)}
+.title-area{flex:1;min-width:0}
+.todo-title{font-weight:500;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:text;transition:all .25s ease}
+.todo-title.done{text-decoration:line-through;color:var(--text-3)}
+.todo-meta{display:flex;gap:8px;align-items:center;margin-top:3px;flex-wrap:wrap}
+.pill{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;background:var(--segment-bg);color:var(--text-2);display:inline-flex;align-items:center;gap:4px;transition:all .2s ease}
+.actions{display:flex;gap:4px;opacity:0;transition:opacity .2s ease}
+.todo-row:hover .actions{opacity:1}
+@media (max-width:700px){.actions{opacity:1}}
+.ibtn{border:none;background:var(--segment-bg);width:28px;height:28px;border-radius:8px;display:grid;place-items:center;cursor:pointer;color:var(--text-2);transition:all .2s ease;font-size:13px}
+.ibtn:hover{background:var(--card-border);color:var(--text);transform:scale(1.08)}
+.ibtn.danger:hover{background:#FEE2E2;color:#EF4444}
+@media (prefers-color-scheme:dark){ .ibtn.danger:hover{background:#3F1A1A} }
+.empty{text-align:center;padding:48px 24px;color:var(--text-3);font-size:14px}
+.empty b{color:var(--text-2);font-weight:600}
+
+/* BOARD - Fixed: dots only on world, border always round via clip */
+#board-view{position:relative;width:100%;height:72vh;min-height:460px;background:var(--card-solid);border:1px solid var(--card-border);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-sm);user-select:none;touch-action:none}
+#board-clip{width:100%;height:100%;position:relative;overflow:hidden;border-radius:24px}
+#board-viewport{width:100%;height:100%;position:relative;overflow:hidden;cursor:grab;background-color:var(--card-solid)}
+#board-viewport.grabbing{cursor:grabbing}
+#board-viewport.attach-mode{cursor:crosshair}
+#board-world{position:absolute;left:0;top:0;width:12000px;height:12000px;background-image:radial-gradient(var(--dot-color) 1.3px,transparent 1.3px);background-size:26px 26px;will-change:transform;transform-origin:top left}
+#board-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+#board-lines line{stroke:var(--text-3);stroke-width:2;stroke-dasharray:8 6;opacity:0.9}
+
+.sticky{position:absolute;width:220px;min-height:150px;background:var(--card-solid);border:1px solid var(--card-border);border-top:4px solid var(--dot-color);border-radius:16px;padding:22px 16px 12px;box-shadow:var(--shadow-sm);cursor:grab;z-index:2;transition:box-shadow .25s ease,opacity .3s ease,transform .25s ease;touch-action:none}
+.sticky:hover{z-index:10;box-shadow:var(--shadow-lg);transform:translateY(-2px) scale(1.01)}
+.sticky.dragging{box-shadow:0 20px 50px rgba(0,0,0,0.22);z-index:50!important;cursor:grabbing;transform:scale(1.04) rotate(-1.5deg);transition:box-shadow .1s,transform .1s}
+.sticky.completed{opacity:0.45}
+.sticky.completed .sticky-title{text-decoration:line-through;color:var(--text-3)}
+.sticky.attach-src{box-shadow:0 0 0 3px #10B981,var(--shadow-lg);transform:scale(1.03)}
+.sticky::before{content:'';position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.18);border:2px solid var(--dot-color);background:var(--dot-color);transition:all .25s ease}
+.sticky.pin-red{border-top-color:var(--pin-red)}.sticky.pin-red::before{background:var(--pin-red);border-color:var(--pin-red)}
+.sticky.pin-blue{border-top-color:var(--pin-blue)}.sticky.pin-blue::before{background:var(--pin-blue);border-color:var(--pin-blue)}
+.sticky.pin-green{border-top-color:var(--pin-green)}.sticky.pin-green::before{background:var(--pin-green);border-color:var(--pin-green)}
+.sticky.pin-purple{border-top-color:var(--pin-purple)}.sticky.pin-purple::before{background:var(--pin-purple);border-color:var(--pin-purple)}
+.sticky.pin-yellow{border-top-color:var(--pin-yellow)}.sticky.pin-yellow::before{background:var(--pin-yellow);border-color:var(--pin-yellow)}
+
+.sticky-num{font-family:'SF Mono',Menlo,monospace;font-size:11px;font-weight:600;color:var(--text-3);background:var(--segment-bg);padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:6px;transition:all .2s ease}
+.sticky-title{font-weight:600;font-size:14.5px;line-height:1.35;word-break:break-word;transition:all .25s ease}
+.sticky-meta{font-size:11.5px;color:var(--text-2);margin-top:6px}
+.sticky-actions{margin-top:10px;display:flex;gap:6px;justify-content:flex-end;opacity:0;transition:opacity .2s ease}
+.sticky:hover .sticky-actions{opacity:1}
+@media (max-width:700px){.sticky-actions{opacity:1}}
+
+.board-ui{position:absolute;left:12px;bottom:12px;z-index:20;display:flex;gap:6px;align-items:center;background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--card-border);padding:6px;border-radius:12px;box-shadow:var(--shadow-sm)}
+.zoom-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--card-border);background:var(--card-solid);display:grid;place-items:center;cursor:pointer;color:var(--text-2);font-weight:600;transition:all .2s ease;font-family:inherit}
+.zoom-btn:hover{color:var(--text);transform:scale(1.05)}
+.zoom-btn:active{transform:scale(0.95)}
+.zoom-btn.locked{background:var(--primary);color:var(--accent-contrast)}
+.zoom-level{font-size:12px;font-weight:600;padding:0 4px;min-width:44px;text-align:center;color:var(--text-2)}
+.board-hint{position:absolute;right:12px;top:12px;z-index:20;background:var(--card);border:1px solid var(--card-border);padding:6px 10px;border-radius:20px;font-size:11px;color:var(--text-3);box-shadow:var(--shadow-sm);max-width:66%;text-align:right;transition:opacity .3s ease}
+
+.footer-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:10px 0 20px}
+
+.overlay{position:fixed;inset:0;background:var(--overlay-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;place-items:center;z-index:100;padding:16px;animation:overlayIn .25s ease}
+.overlay.active{display:grid}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card-solid);border:1px solid var(--card-border);border-radius:24px;padding:32px;width:90%;max-width:460px;box-shadow:0 30px 60px rgba(0,0,0,0.15);animation:slideUp .35s cubic-bezier(.4,.0,.2,1)}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal h2{margin-bottom:20px;font-weight:600;letter-spacing:-0.02em;font-size:20px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-weight:500;font-size:14px;margin-bottom:6px;color:var(--text-2)}
+.form-group input{width:100%;padding:12px;border:1px solid var(--card-border);border-radius:12px;font-size:14px;background:var(--segment-bg);outline:none;transition:all .25s ease;color:var(--text);font-family:inherit}
+.form-group input:focus{border-color:var(--text);background:var(--card-solid);box-shadow:0 0 0 4px var(--ring)}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+.btn-cancel{background:var(--segment-bg);border:1px solid var(--card-border);padding:10px 18px;border-radius:12px;font-weight:600;font-size:13px;cursor:pointer;color:var(--text-2);font-family:inherit;transition:all .2s ease}
+.btn-cancel:hover{color:var(--text);transform:translateY(-1px)}
+
+/* Color dots - bigger, no dropdown needed */
+.color-dots{display:flex;gap:10px;margin-top:4px}
+.color-dot{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;display:grid;place-items:center;transition:all .25s cubic-bezier(.4,.0,.2,1)}
+.color-dot:hover{transform:scale(1.12)}
+.color-dot.active{border-color:var(--text);box-shadow:0 0 0 3px var(--ring);transform:scale(1.12)}
+.color-dot span{width:22px;height:22px;border-radius:50%;display:block}
+
+.toasts{position:fixed;right:14px;bottom:14px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{pointer-events:auto;background:var(--text);color:var(--accent-contrast);padding:10px 14px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);animation:toastIn .35s cubic-bezier(.4,.0,.2,1)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.kbd-hint{position:absolute;left:12px;top:12px;z-index:20;background:var(--card);border:1px solid var(--card-border);padding:5px 10px;border-radius:20px;font-size:10px;color:var(--text-3);box-shadow:var(--shadow-sm);letter-spacing:0.02em}
+.kbd{background:var(--segment-bg);padding:1px 5px;border-radius:4px;font-weight:600;margin:0 1px}
+
+@media (max-width:700px){
+  body{padding:10px}
+  .toolbox{top:8px}
+  #board-view{height:68vh;min-height:420px}
+  .sticky{width:170px;min-height:128px;padding:18px 12px 10px}
+  .modal{padding:22px}
+  .form-row{flex-direction:column;gap:0}
+  .board-hint{font-size:10px}
+  .kbd-hint{display:none}
+}
+@media (max-width:480px){
+  .sticky{width:148px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="brand-row">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <div class="brand-name">Sleem's Tasks</div>
+          <div class="brand-sub">Act now. Simplify life.</div>
+        </div>
+      </div>
+      <div id="slogan-display" class="slogan" title="Double-click to edit">Double-click to edit your focus slogan ✨</div>
+    </div>
+    <div class="toolbox">
+      <div class="tool-left">
+        <div class="segment" id="view-seg">
+          <button class="seg-btn active" data-view="list">📋 List</button>
+          <button class="seg-btn" data-view="board">📌 Board</button>
+        </div>
+        <div class="tool-divider"></div>
+        <div class="segment" id="filter-seg">
+          <button class="seg-btn active" data-filter="all">All</button>
+          <button class="seg-btn" data-filter="active">Active</button>
+          <button class="seg-btn" data-filter="completed">Done</button>
+          <button class="seg-btn" data-filter="trash">Trash</button>
+        </div>
+        <div class="tool-divider"></div>
+        <div class="toggle-wrap" id="toggle-done-wrap">
+          <div class="toggle" id="toggle-done"></div>
+          <span class="toggle-label">Hide done</span>
+        </div>
+      </div>
+      <div class="tool-right">
+        <button id="btn-attach" class="icon-tool" style="display:none">🖇️ Attach</button>
+        <button id="btn-add" class="btn-primary">+ Add Task</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="list-view" class="view-container active"></div>
+
+  <div id="board-view" class="view-container">
+    <div id="board-clip">
+      <div id="board-viewport">
+        <div id="board-world">
+          <svg id="board-lines"></svg>
+          <div id="board-container"></div>
+        </div>
+      </div>
+    </div>
+    <div class="board-ui">
+      <button class="zoom-btn" id="z-out">−</button>
+      <div class="zoom-level" id="z-level">100%</div>
+      <button class="zoom-btn" id="z-in">+</button>
+      <div class="tool-divider"></div>
+      <button class="zoom-btn" id="z-lock" title="Lock/Unlock zoom">🔓</button>
+      <div class="tool-divider"></div>
+      <button class="zoom-btn" id="z-reset">↺</button>
+    </div>
+    <div class="board-hint" id="board-hint">Drag canvas to pan • Scroll to zoom • Toggle 🔓 to lock</div>
+    <div class="kbd-hint"><kbd class="kbd">N</kbd> New task &nbsp; <kbd class="kbd">A</kbd> Attach &nbsp; <kbd class="kbd">Esc</kbd> Cancel</div>
+  </div>
+
+  <div class="footer-actions">
+    <button class="icon-tool" id="act-finish-all">✓ Finish all</button>
+    <button class="icon-tool" id="act-clear-done">Clear completed</button>
+    <button class="icon-tool" id="act-clear-all">Clear all</button>
+    <div class="tool-divider"></div>
+    <button class="icon-tool" id="act-export">⬇️ Export</button>
+    <button class="icon-tool" id="act-import">⬆️ Import</button>
+    <span style="font-size:11px;color:var(--text-3);display:flex;align-items:center">Local • Auto-saved • Infinite canvas</span>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modal-title">Add New Task</h2>
+    <form id="task-form" onsubmit="return false;">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="m-title" required maxlength="240" placeholder="What needs to be done?">
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="date" id="m-date"></div>
+        <div class="form-group"><label>Time</label><input type="time" id="m-time"></div>
+      </div>
+      <div class="form-group">
+        <label>Color</label>
+        <div class="color-dots" id="color-dots">
+          <div class="color-dot active" data-cat="red"><span style="background:#EF4444"></span></div>
+          <div class="color-dot" data-cat="blue"><span style="background:#3B82F6"></span></div>
+          <div class="color-dot" data-cat="green"><span style="background:#10B981"></span></div>
+          <div class="color-dot" data-cat="purple"><span style="background:#8B5CF6"></span></div>
+          <div class="color-dot" data-cat="yellow"><span style="background:#F59E0B"></span></div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" id="m-cancel">Cancel</button>
+        <button type="submit" class="btn-primary" id="m-save" style="padding:10px 20px">Save Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+const { invoke } = window.__TAURI__.core;
+let todos = [];
+let connections = [];
+let slogan = "Double-click to edit your focus slogan ✨";
+let currentView = 'list';
+let currentFilter = 'all';
+let hideDone = false;
+let boardTransform = null;
+let zoomLocked = false;
+let attachMode = false;
+let attachSrc = null;
+let editingId = null;
+let selectedCat = 'red';
+
+let isPanning = false;
+let panStart = { x: 0, y: 0 };
+let transformStart = { x: 0, y: 0 };
+let isDraggingNote = false;
+let dragNote = null;
+let dragOffset = { x: 0, y: 0 };
+
+const listView = document.getElementById('list-view');
+const boardViewport = document.getElementById('board-viewport');
+const boardWorld = document.getElementById('board-world');
+const boardContainer = document.getElementById('board-container');
+const boardLines = document.getElementById('board-lines');
+const zLevel = document.getElementById('z-level');
+const sloganDisplay = document.getElementById('slogan-display');
+const overlay = document.getElementById('overlay');
+const mTitle = document.getElementById('m-title');
+const mDate = document.getElementById('m-date');
+const mTime = document.getElementById('m-time');
+const modalTitle = document.getElementById('modal-title');
+const zLockBtn = document.getElementById('z-lock');
+const toggleDoneEl = document.getElementById('toggle-done');
+const toggleDoneWrap = document.getElementById('toggle-done-wrap');
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  try {
+    return new Date(d + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric', weekday: 'short' });
+  } catch { return d; }
+}
+
+function formatTime(t) {
+  if (!t) return '';
+  try {
+    const [h, m] = t.split(':').map(Number);
+    if (isNaN(h)) return t;
+    return `${(h % 12 || 12)}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+  } catch { return t; }
+}
+
+function isToday(d) { return d === new Date().toISOString().split('T')[0]; }
+function isTomorrow(d) { const tm = new Date(Date.now() + 864e5).toISOString().split('T')[0]; return d === tm; }
+
+function toast(msg) {
+  const c = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(8px)';
+    el.style.transition = 'opacity .3s, transform .3s';
+    setTimeout(() => el.remove(), 300);
+  }, 2200);
+}
+
+async function save() {
+  try {
+    await invoke('save_data', {
+      data: JSON.stringify({
+        todos, connections, slogan, currentView, currentFilter, hideDone, boardTransform, zoomLocked
+      })
+    });
+  } catch (e) {
+    console.error('Save failed:', e);
+  }
+}
+
+let saveDeb;
+function scheduleSave() {
+  clearTimeout(saveDeb);
+  saveDeb = setTimeout(save, 200);
+}
+
+async function load() {
+  try {
+    const raw = await invoke('load_data');
+    if (raw) {
+      const data = JSON.parse(raw);
+      todos = data.todos || [];
+      connections = data.connections || [];
+      slogan = data.slogan || slogan;
+      currentView = data.currentView || 'list';
+      currentFilter = data.currentFilter || 'all';
+      hideDone = data.hideDone || false;
+      boardTransform = data.boardTransform || null;
+      zoomLocked = data.zoomLocked || false;
+    }
+  } catch (e) {
+    console.error('Load failed:', e);
+  }
+
+  if (todos.length === 0) {
+    todos = [
+      { id: Date.now(), title: 'Add your first task via + Add button 📝', completed: false, removed: false, date: '', time: '', category: 'blue', x: 4980, y: 4980, createdAt: Date.now() },
+      { id: Date.now() + 1, title: 'Drag canvas to explore ♾️', completed: false, removed: false, date: new Date().toISOString().split('T')[0], time: '', category: 'green', x: 5270, y: 5000, createdAt: Date.now() + 1 },
+      { id: Date.now() + 2, title: 'Lock zoom with 🔓 toggle', completed: false, removed: false, date: '', time: '', category: 'yellow', x: 5050, y: 5200, createdAt: Date.now() + 2 }
+    ];
+  }
+
+  todos.forEach(t => {
+    if (t.x == null || t.y == null) {
+      t.x = 5000 + Math.random() * 360;
+      t.y = 5000 + Math.random() * 260;
+    }
+  });
+
+  if (!boardTransform) {
+    boardTransform = { x: 0, y: 0, scale: 1 };
+  }
+}
+
+function getFiltered() {
+  let arr = todos.slice();
+  if (currentFilter === 'active') arr = arr.filter(t => !t.completed && !t.removed);
+  else if (currentFilter === 'completed') arr = arr.filter(t => t.completed && !t.removed);
+  else if (currentFilter === 'trash') arr = arr.filter(t => t.removed);
+  else arr = arr.filter(t => !t.removed);
+
+  if (hideDone && currentFilter === 'all') {
+    arr = arr.filter(t => !t.completed);
+  }
+
+  arr.sort((a, b) => {
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    if (a.date && b.date) return a.date.localeCompare(b.date);
+    return (b.createdAt || 0) - (a.createdAt || 0);
+  });
+  return arr;
+}
+
+function getBoardFiltered() {
+  if (currentFilter === 'trash') return todos.filter(t => t.removed);
+  let arr = todos.filter(t => !t.removed);
+  if (currentFilter === 'active') arr = arr.filter(t => !t.completed);
+  else if (currentFilter === 'completed') arr = arr.filter(t => t.completed);
+  if (hideDone) arr = arr.filter(t => !t.completed);
+  return arr;
+}
+
+function renderAll() {
+  renderSlogan();
+  renderList();
+  renderBoard();
+  updateTransform();
+  syncUI();
+}
+
+function renderSlogan() {
+  sloganDisplay.textContent = slogan;
+}
+
+function renderList() {
+  const data = getFiltered();
+  if (data.length === 0) {
+    const isTrash = currentFilter === 'trash';
+    listView.innerHTML = `<div class="list-card"><div class="empty">${isTrash ? '<b>Trash is empty</b>' : '<b>✨ All clear</b><br>Click + Add Task for a new card'}</div></div>`;
+    return;
+  }
+
+  const groups = {};
+  if (currentFilter === 'trash') {
+    groups['Trash'] = data;
+  } else {
+    data.forEach(t => {
+      let k = 'No date';
+      if (isToday(t.date)) k = 'Today';
+      else if (isTomorrow(t.date)) k = 'Tomorrow';
+      else if (t.date) k = formatDate(t.date);
+      if (!groups[k]) groups[k] = [];
+      groups[k].push(t);
+    });
+  }
+
+  const order = ['Today', 'Tomorrow'];
+  const keys = Object.keys(groups).sort((a, b) => {
+    const ia = order.indexOf(a), ib = order.indexOf(b);
+    if (ia !== -1 || ib !== -1) {
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    }
+    return a.localeCompare(b);
+  });
+
+  let html = '';
+  keys.forEach(k => {
+    html += `<div class="list-group"><div class="list-group-header">${escapeHtml(k)}</div><div class="list-card">`;
+    groups[k].forEach(item => {
+      const pillDate = item.date ? `${formatDate(item.date)}${item.time ? ' • ' + formatTime(item.time) : ''}` : '';
+      html += `<div class="todo-row ${item.completed ? 'completed' : ''}" data-id="${item.id}" draggable="true">
+        <div class="check ${item.completed ? 'done' : ''}" data-act="toggle">${item.completed ? '✓' : ''}</div>
+        <div class="title-area">
+          <div class="todo-title ${item.completed ? 'done' : ''}" data-act="edit-text">${escapeHtml(item.title)}</div>
+          <div class="todo-meta">
+            ${item.removed ? '<span class="pill">🗑 Trash</span>' : ''}
+            ${pillDate ? `<span class="pill">🕒 ${escapeHtml(pillDate)}</span>` : ''}
+            <span class="pill" style="color:var(--pin-${item.category})">● ${escapeHtml(item.category)}</span>
+          </div>
+        </div>
+        <div class="actions">
+          ${item.removed
+            ? `<button class="ibtn" data-act="restore">↩</button><button class="ibtn danger" data-act="permadelete">✕</button>`
+            : `<button class="ibtn" data-act="edit">✎</button><button class="ibtn" data-act="toggle">${item.completed ? '↩' : '✓'}</button><button class="ibtn danger" data-act="trash">🗑</button>`
+          }
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  listView.innerHTML = html;
+  attachListEvents();
+}
+
+function attachListEvents() {
+  listView.querySelectorAll('.todo-row').forEach(row => {
+    const id = Number(row.dataset.id);
+    row.querySelectorAll('[data-act]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        handleAction(btn.dataset.act, id);
+      });
+    });
+    const te = row.querySelector('.todo-title');
+    if (te) te.addEventListener('dblclick', () => handleAction('edit', id));
+
+    row.addEventListener('dragstart', e => {
+      row.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', String(id));
+      window._dragId = id;
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      window._dragId = null;
+    });
+    row.addEventListener('dragover', e => e.preventDefault());
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      const src = window._dragId;
+      if (!src) return;
+      const si = todos.findIndex(t => t.id === src);
+      const ti = todos.findIndex(t => t.id === id);
+      if (si > -1 && ti > -1 && si !== ti) {
+        const [m] = todos.splice(si, 1);
+        todos.splice(ti, 0, m);
+        scheduleSave();
+        renderList();
+      }
+    });
+  });
+}
+
+function renderBoard() {
+  const data = getBoardFiltered();
+  boardContainer.innerHTML = '';
+  boardLines.innerHTML = '';
+
+  if (data.length === 0) {
+    boardContainer.innerHTML = '<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--card);border:1px solid var(--card-border);padding:12px 16px;border-radius:12px;color:var(--text-3);font-size:13px;box-shadow:var(--shadow-sm)">No tasks • + Add Task</div>';
+    return;
+  }
+
+  data.forEach((item, idx) => {
+    const num = String(idx + 1).padStart(2, '0');
+    const div = document.createElement('div');
+    div.className = `sticky pin-${item.category} ${item.completed ? 'completed' : ''}`;
+    div.dataset.id = item.id;
+    div.style.left = item.x + 'px';
+    div.style.top = item.y + 'px';
+    if (attachMode && attachSrc === item.id) div.classList.add('attach-src');
+
+    div.innerHTML = `
+      <div class="sticky-num">${num}</div>
+      <div class="sticky-title ${item.completed ? 'done' : ''}">${escapeHtml(item.title)}</div>
+      <div class="sticky-meta">${item.date ? escapeHtml(formatDate(item.date)) : ''} ${item.time ? escapeHtml(formatTime(item.time)) : ''}</div>
+      <div class="sticky-actions">
+        <button class="ibtn" data-act="toggle">${item.completed ? '↩' : '✓'}</button>
+        <button class="ibtn" data-act="edit">✎</button>
+        <button class="ibtn danger" data-act="trash">✕</button>
+      </div>`;
+
+    div.addEventListener('click', e => {
+      if (attachMode) {
+        e.stopPropagation();
+        handleAttach(item.id, div);
+      }
+    });
+    div.querySelectorAll('[data-act]').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        handleAction(b.dataset.act, item.id);
+      });
+    });
+    div.addEventListener('dblclick', e => {
+      if (attachMode) return;
+      e.stopPropagation();
+      handleAction('edit', item.id);
+    });
+    div.addEventListener('pointerdown', e => startNoteDrag(e, item, div));
+
+    boardContainer.appendChild(div);
+  });
+
+  drawConnections();
+}
+
+function drawConnections() {
+  const data = getBoardFiltered();
+  if (connections.length === 0) { boardLines.innerHTML = ''; return; }
+  const map = new Map(data.map(t => [t.id, t]));
+  let svg = '';
+  connections.forEach(c => {
+    const a = map.get(c.id1), b = map.get(c.id2);
+    if (!a || !b) return;
+    const ax = a.x + 110, ay = a.y + 6, bx = b.x + 110, by = b.y + 6;
+    svg += `<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" />`;
+  });
+  boardLines.innerHTML = svg;
+}
+
+function syncUI() {
+  document.querySelectorAll('#view-seg [data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === currentView));
+  document.querySelectorAll('#filter-seg [data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === currentFilter));
+  document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+  document.getElementById(currentView + '-view').classList.add('active');
+
+  document.getElementById('btn-attach').style.display = currentView === 'board' ? 'inline-flex' : 'none';
+  document.getElementById('btn-attach').classList.toggle('active', attachMode);
+  boardViewport.classList.toggle('attach-mode', attachMode);
+
+  // Toggle state
+  toggleDoneEl.classList.toggle('on', hideDone);
+
+  const hint = document.getElementById('board-hint');
+  if (hint) {
+    if (attachMode) hint.textContent = 'Attach mode: click source then target • Esc to cancel';
+    else if (zoomLocked) hint.textContent = 'Zoom locked 🔒 • Unlock to zoom';
+    else hint.textContent = 'Drag canvas to pan • Scroll to zoom • Toggle 🔓 to lock';
+  }
+  zLockBtn.textContent = zoomLocked ? '🔒' : '🔓';
+  zLockBtn.classList.toggle('locked', zoomLocked);
+}
+
+function updateTransform() {
+  boardWorld.style.transform = `translate(${boardTransform.x}px,${boardTransform.y}px) scale(${boardTransform.scale})`;
+  zLevel.textContent = Math.round(boardTransform.scale * 100) + '%';
+  scheduleSave();
+}
+
+function centerBoard() {
+  const vw = boardViewport.clientWidth;
+  const vh = boardViewport.clientHeight;
+  boardTransform.x = vw / 2 - 5110 * boardTransform.scale;
+  boardTransform.y = vh / 2 - 5075 * boardTransform.scale;
+}
+
+function handleAction(act, id) {
+  const task = todos.find(t => t.id === id);
+  if (!task && act !== 'add') return;
+
+  switch (act) {
+    case 'toggle':
+      if (task.removed) break;
+      task.completed = !task.completed;
+      toast(task.completed ? 'Done' : 'Active');
+      break;
+    case 'trash':
+      task.removed = true;
+      connections = connections.filter(c => c.id1 !== id && c.id2 !== id);
+      toast('Moved to trash');
+      break;
+    case 'restore':
+      task.removed = false;
+      toast('Restored');
+      break;
+    case 'permadelete':
+      if (confirm('Delete permanently?')) {
+        todos = todos.filter(t => t.id !== id);
+        connections = connections.filter(c => c.id1 !== id && c.id2 !== id);
+        toast('Deleted');
+      } else return;
+      break;
+    case 'edit':
+    case 'edit-text':
+      openModal('Edit Task', task);
+      return;
+  }
+  save();
+  renderAll();
+}
+
+function openModal(title, task = null) {
+  editingId = task ? task.id : null;
+  modalTitle.textContent = title;
+  if (task) {
+    mTitle.value = task.title;
+    mDate.value = task.date || '';
+    mTime.value = task.time || '';
+    selectedCat = task.category || 'red';
+  } else {
+    mTitle.value = '';
+    mDate.value = '';
+    mTime.value = '';
+    selectedCat = 'red';
+  }
+  syncColorDots(selectedCat);
+  overlay.classList.add('active');
+  setTimeout(() => mTitle.focus(), 80);
+}
+
+function closeModal() {
+  overlay.classList.remove('active');
+  editingId = null;
+}
+
+function findFreeSpot(cx, cy) {
+  const W = 220, H = 160;
+  let x = cx, y = cy, t = 0;
+  while (t < 80) {
+    let collide = false;
+    for (const tt of todos) {
+      if (Math.abs((tt.x || 0) - x) < W + 20 && Math.abs((tt.y || 0) - y) < H + 20) {
+        collide = true;
+        break;
+      }
+    }
+    if (!collide) return { x, y };
+    x += 36;
+    y += 28;
+    if (x > 9000) { x = 4900; y += 220; }
+    t++;
+  }
+  return { x, y };
+}
+
+function addTaskFromInputs(title, date, time, cat) {
+  title = (title || '').trim();
+  if (!title) { toast('Title required'); return null; }
+  const nid = Date.now() + Math.floor(Math.random() * 1000);
+  const centerWX = (-boardTransform.x + boardViewport.clientWidth / 2) / boardTransform.scale - 110;
+  const centerWY = (-boardTransform.y + boardViewport.clientHeight / 2) / boardTransform.scale - 75;
+  const spot = findFreeSpot(centerWX, centerWY);
+  const task = { id: nid, title, completed: false, removed: false, date: date || '', time: time || '', category: cat || 'red', x: spot.x, y: spot.y, createdAt: Date.now() };
+  todos.push(task);
+  save();
+  renderAll();
+  toast('Added');
+  return task;
+}
+
+function handleAttach(id, el) {
+  if (!attachSrc) {
+    attachSrc = id;
+    boardContainer.querySelectorAll('.sticky').forEach(n => n.classList.remove('attach-src'));
+    el.classList.add('attach-src');
+    toast('Now click target');
+  } else if (attachSrc !== id) {
+    const exists = connections.some(c => (c.id1 === attachSrc && c.id2 === id) || (c.id1 === id && c.id2 === attachSrc));
+    if (exists) toast('Already connected');
+    else { connections.push({ id1: attachSrc, id2: id }); toast('Connected ✓'); }
+    attachSrc = null;
+    attachMode = false;
+    syncUI();
+    save();
+    renderAll();
+  } else {
+    attachSrc = null;
+    boardContainer.querySelectorAll('.sticky').forEach(n => n.classList.remove('attach-src'));
+  }
+}
+
+function syncColorDots(cat) {
+  selectedCat = cat;
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.toggle('active', d.dataset.cat === cat));
+}
+
+// Toggle hide done
+toggleDoneWrap.addEventListener('click', () => {
+  hideDone = !hideDone;
+  save();
+  syncUI();
+  renderAll();
+});
+
+// Board pan
+boardViewport.addEventListener('pointerdown', e => {
+  if (e.target.closest('.sticky')) return;
+  if (attachMode) return;
+  isPanning = true;
+  boardViewport.setPointerCapture(e.pointerId);
+  panStart = { x: e.clientX, y: e.clientY };
+  transformStart = { x: boardTransform.x, y: boardTransform.y };
+  boardViewport.classList.add('grabbing');
+});
+
+boardViewport.addEventListener('pointermove', e => {
+  if (!isPanning) return;
+  boardTransform.x = transformStart.x + e.clientX - panStart.x;
+  boardTransform.y = transformStart.y + e.clientY - panStart.y;
+  updateTransform();
+});
+
+boardViewport.addEventListener('pointerup', e => {
+  if (isPanning) {
+    isPanning = false;
+    boardViewport.classList.remove('grabbing');
+    try { boardViewport.releasePointerCapture(e.pointerId); } catch {}
+  }
+});
+
+boardViewport.addEventListener('wheel', e => {
+  if (zoomLocked) { e.preventDefault(); return; }
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.06 : 0.94;
+  const ns = Math.min(2.2, Math.max(0.35, boardTransform.scale * factor));
+  if (ns === boardTransform.scale) return;
+  const rect = boardViewport.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  const wx = (cx - boardTransform.x) / boardTransform.scale;
+  const wy = (cy - boardTransform.y) / boardTransform.scale;
+  boardTransform.scale = ns;
+  boardTransform.x = cx - wx * ns;
+  boardTransform.y = cy - wy * ns;
+  updateTransform();
+}, { passive: false });
+
+document.getElementById('z-in').addEventListener('click', () => {
+  if (zoomLocked) { toast('Locked 🔒'); return; }
+  boardTransform.scale = Math.min(2.2, boardTransform.scale * 1.18);
+  updateTransform();
+});
+document.getElementById('z-out').addEventListener('click', () => {
+  if (zoomLocked) { toast('Locked 🔒'); return; }
+  boardTransform.scale = Math.max(0.35, boardTransform.scale * 0.85);
+  updateTransform();
+});
+document.getElementById('z-reset').addEventListener('click', () => {
+  boardTransform.scale = 1;
+  centerBoard();
+  updateTransform();
+  toast('Reset');
+});
+document.getElementById('z-lock').addEventListener('click', () => {
+  zoomLocked = !zoomLocked;
+  save();
+  syncUI();
+  toast(zoomLocked ? 'Locked 🔒' : 'Unlocked 🔓');
+});
+
+function startNoteDrag(e, task, el) {
+  if (attachMode) return;
+  if (e.button !== 0 && e.pointerType !== 'touch') return;
+  if (e.target.closest('.sticky-actions')) return;
+  e.stopPropagation();
+  isDraggingNote = true;
+  dragNote = el;
+  const rect = boardViewport.getBoundingClientRect();
+  const mwx = (e.clientX - rect.left - boardTransform.x) / boardTransform.scale;
+  const mwy = (e.clientY - rect.top - boardTransform.y) / boardTransform.scale;
+  dragOffset.x = mwx - task.x;
+  dragOffset.y = mwy - task.y;
+  el.setPointerCapture(e.pointerId);
+  el.classList.add('dragging');
+  boardViewport.classList.add('grabbing');
+}
+
+window.addEventListener('pointermove', e => {
+  if (!isDraggingNote || !dragNote) return;
+  const rect = boardViewport.getBoundingClientRect();
+  const mwx = (e.clientX - rect.left - boardTransform.x) / boardTransform.scale;
+  const mwy = (e.clientY - rect.top - boardTransform.y) / boardTransform.scale;
+  const id = Number(dragNote.dataset.id);
+  const task = todos.find(t => t.id === id);
+  if (!task) return;
+  task.x = mwx - dragOffset.x;
+  task.y = mwy - dragOffset.y;
+  dragNote.style.left = task.x + 'px';
+  dragNote.style.top = task.y + 'px';
+  drawConnections();
+});
+
+window.addEventListener('pointerup', e => {
+  if (isDraggingNote && dragNote) {
+    dragNote.classList.remove('dragging');
+    boardViewport.classList.remove('grabbing');
+    try { dragNote.releasePointerCapture(e.pointerId); } catch {}
+    save();
+  }
+  isDraggingNote = false;
+  dragNote = null;
+});
+
+document.querySelectorAll('#view-seg [data-view]').forEach(b => {
+  b.addEventListener('click', () => {
+    currentView = b.dataset.view;
+    if (currentView !== 'board') { attachMode = false; attachSrc = null; }
+    save();
+    syncUI();
+    renderAll();
+  });
+});
+document.querySelectorAll('#filter-seg [data-filter]').forEach(b => {
+  b.addEventListener('click', () => {
+    currentFilter = b.dataset.filter;
+    save();
+    renderAll();
+  });
+});
+
+document.getElementById('btn-attach').addEventListener('click', () => {
+  if (currentView !== 'board') { toast('Switch to Board'); return; }
+  attachMode = !attachMode;
+  attachSrc = null;
+  syncUI();
+  renderBoard();
+  if (attachMode) toast('Attach ON');
+});
+
+document.getElementById('btn-add').addEventListener('click', () => openModal('Add New Task'));
+
+document.getElementById('m-cancel').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+document.getElementById('m-save').addEventListener('click', () => {
+  const title = mTitle.value.trim();
+  if (!title) { toast('Title required'); return; }
+  if (editingId) {
+    const t = todos.find(x => x.id === editingId);
+    if (t) { t.title = title; t.date = mDate.value; t.time = mTime.value; t.category = selectedCat; }
+  } else {
+    addTaskFromInputs(title, mDate.value, mTime.value, selectedCat);
+    closeModal();
+    return;
+  }
+  save();
+  closeModal();
+  renderAll();
+  toast('Saved');
+});
+
+mTitle.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('m-save').click(); });
+
+document.querySelectorAll('.color-dot').forEach(d => {
+  d.addEventListener('click', () => { syncColorDots(d.dataset.cat); });
+});
+
+document.getElementById('act-finish-all').addEventListener('click', () => {
+  const a = todos.filter(t => !t.completed && !t.removed);
+  if (a.length === 0) return toast('Nothing active');
+  a.forEach(t => t.completed = true);
+  save();
+  renderAll();
+  toast('All finished');
+});
+
+document.getElementById('act-clear-done').addEventListener('click', () => {
+  const c = todos.filter(t => t.completed && !t.removed).length;
+  if (c === 0) return toast('No completed');
+  if (!confirm(`Move ${c} to trash?`)) return;
+  todos.forEach(t => { if (t.completed) t.removed = true; });
+  save();
+  renderAll();
+});
+
+document.getElementById('act-clear-all').addEventListener('click', () => {
+  if (!confirm('Move ALL to trash?')) return;
+  todos.forEach(t => { if (!t.removed) t.removed = true; });
+  save();
+  renderAll();
+});
+
+document.getElementById('act-export').addEventListener('click', async () => {
+  const data = JSON.stringify(todos.filter(t => !t.removed), null, 2);
+  try {
+    await invoke('export_data', { data, filename: `sleems-tasks-${new Date().toISOString().slice(0, 10)}.json` });
+    toast('Exported');
+  } catch (e) { toast('Export failed'); }
+});
+
+document.getElementById('act-import').addEventListener('click', async () => {
+  try {
+    const raw = await invoke('import_data');
+    if (!raw) return;
+    const imp = JSON.parse(raw.trim());
+    if (!Array.isArray(imp)) throw new Error('Not array');
+    let nid = Date.now(), added = 0;
+    imp.forEach(it => {
+      if (!it.title) return;
+      todos.push({
+        id: nid++, title: String(it.title).slice(0, 240), completed: !!it.completed, removed: false,
+        date: it.date || '', time: it.time || '', category: it.category || 'red',
+        x: null, y: null, createdAt: Date.now() + added
+      });
+      added++;
+    });
+    todos.forEach(t => {
+      if (t.x == null) { const s = findFreeSpot(5000 + Math.random() * 400, 5000 + Math.random() * 300); t.x = s.x; t.y = s.y; }
+    });
+    save();
+    renderAll();
+    toast(`Imported ${added}`);
+  } catch (err) { toast('Import failed: ' + err.message); }
+});
+
+sloganDisplay.addEventListener('dblclick', () => {
+  const input = document.createElement('input');
+  input.className = 'slogan-input';
+  input.value = slogan;
+  sloganDisplay.replaceWith(input);
+  input.focus();
+  input.select();
+
+  const commit = () => {
+    const val = input.value.trim() || slogan;
+    if (val !== slogan) {
+      slogan = val;
+      save();
+    }
+    input.replaceWith(sloganDisplay);
+    sloganDisplay.textContent = slogan;
+  };
+
+  input.addEventListener('keydown', ev => {
+    if (ev.key === 'Enter') { ev.preventDefault(); commit(); }
+    if (ev.key === 'Escape') { input.replaceWith(sloganDisplay); sloganDisplay.textContent = slogan; }
+  });
+  input.addEventListener('blur', commit);
+});
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (attachMode) { attachMode = false; attachSrc = null; syncUI(); renderBoard(); }
+    if (overlay.classList.contains('active')) closeModal();
+  }
+  if ((e.key === 'n' || e.key === 'N') && !overlay.classList.contains('active') && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+    openModal('Add New Task');
+  }
+  if ((e.key === 'a' || e.key === 'A') && currentView === 'board' && !overlay.classList.contains('active') && document.activeElement.tagName !== 'INPUT') {
+    attachMode = !attachMode;
+    attachSrc = null;
+    syncUI();
+    renderBoard();
+  }
+});
+
+(async () => {
+  await load();
+  centerBoard();
+  renderAll();
+  updateTransform();
+})();
+</script>
+</body>
+</html>
