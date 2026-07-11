@@ -2,4 +2,4 @@ node_modules/
 src-tauri/target/
 .DS_Store
 *.swp
-dist/
+src-tauri/gen/

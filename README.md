@@ -6,18 +6,22 @@ List view for structure, Board view for chaos. Infinite canvas, colored pins, lo
 
 ## Screenshots
 
-<!-- Add your screenshots here after using the app -->
-<!-- Example: -->
-<!-- ![List View](screenshots/list-view.png) -->
-<!-- ![Board View](screenshots/board-view.png) -->
+**Light Mode**
+
+![List View - Light](screenshots/light-list.png)
+![Board View - Light](screenshots/light-board.png)
+
+**Dark Mode**
+
+![List View - Dark](screenshots/dark-list.png)
+![Board View - Dark](screenshots/dark-board.png)
 
 ## Download (macOS)
 
-1. Go to [Releases](https://github.com/Ahmed-Sleem/sleems-tasks/releases)
-2. Download the latest `Sleems-Tasks-macOS.zip`
-3. Unzip it
-4. Move **Sleem's Tasks.app** to your Applications folder
-5. On first open: Right-click → Open (macOS security thing)
+1. Download [`Sleems-Tasks-macOS.zip`](dist/Sleems-Tasks-macOS.zip) from this repo
+2. Unzip it
+3. Move **Sleem's Tasks.app** to your Applications folder
+4. On first open: Right-click → Open (macOS security thing)
 
 ## Features
 
@@ -26,6 +30,7 @@ List view for structure, Board view for chaos. Infinite canvas, colored pins, lo
 - 🎨 Color-coded pins (Red, Blue, Green, Purple, Yellow)
 - 🖇️ Connect tasks on the board
 - 🌙 Auto light/dark mode
+- 🔘 iOS-style toggle to hide completed tasks
 - 💾 100% local, auto-saved
 - ⬇️ Export / ⬆️ Import
 
