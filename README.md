@@ -4,21 +4,18 @@ A clean, minimalist task manager I built for myself — because sometimes you ju
 
 List view for structure, Board view for chaos. Infinite canvas, colored pins, local-first. No accounts, no servers, no nonsense.
 
+![App Preview](screenshots/app-preview.png)
+
 ## Screenshots
 
-**Light Mode**
-
-![List View - Light](screenshots/light-list.png)
-![Board View - Light](screenshots/light-board.png)
-
-**Dark Mode**
-
-![List View - Dark](screenshots/dark-list.png)
-![Board View - Dark](screenshots/dark-board.png)
+| Light Mode | Dark Mode |
+|:---:|:---:|
+| ![List View - Light](screenshots/light-list.png) | ![List View - Dark](screenshots/dark-list.png) |
+| ![Board View - Light](screenshots/light-board.png) | ![Board View - Dark](screenshots/dark-board.png) |
 
 ## Download (macOS)
 
-1. Download [`Sleems-Tasks-macOS.zip`](dist/Sleems-Tasks-macOS.zip) from this repo
+1. Download [`Sleems-Tasks-macOS.zip`](dist/Sleems-Tasks-macOS.zip) from this repo (or grab it from [Releases](https://github.com/Ahmed-Sleem/sleems-tasks/releases))
 2. Unzip it
 3. Move **Sleem's Tasks.app** to your Applications folder
 4. On first open: Right-click → Open (macOS security thing)
